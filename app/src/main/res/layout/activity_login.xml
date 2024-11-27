@@ -1,0 +1,75 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="#F9FAFB">
+
+
+    <TextView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/powermatch"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#3B82F6"
+        android:gravity="center"
+        android:paddingBottom="24dp" />
+
+
+    <EditText
+        android:id="@+id/emailField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:background="@drawable/input_background"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:padding="12dp"
+        android:textColorHint="#757575"
+        tools:ignore="VisualLintTextFieldSize" />
+
+
+    <EditText
+        android:id="@+id/passwordField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:autofillHints=""
+        android:background="@drawable/input_background"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:textColorHint="#757575"
+        tools:ignore="VisualLintTextFieldSize" />
+
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:backgroundTint="#3B82F6"
+        android:textColor="#FFFFFF"
+        android:padding="12dp"
+        android:textStyle="bold"
+        tools:ignore="VisualLintButtonSize" />
+
+
+    <TextView
+        android:id="@+id/signupButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:minHeight="48dp"
+        android:paddingTop="16dp"
+        android:text="@string/don_t_have_an_account_sign_up"
+        android:textColor="#5C6BC0" />
+
+</LinearLayout>

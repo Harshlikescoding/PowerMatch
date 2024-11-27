@@ -1,0 +1,78 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:gravity="center"
+        app:title="PowerMatch"
+        app:titleTextColor="@android:color/black"
+        tools:ignore="MissingConstraints" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/swipeableCards"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/buttonLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+        <ImageButton
+            android:id="@+id/buttonLike"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/circle_background"
+            android:src="@drawable/ic_like"
+            app:tint="@color/white"
+            android:contentDescription="Like" />  <!-- Added content description -->
+
+
+        <ImageButton
+            android:id="@+id/buttonFavorite"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/circle_background"
+            android:src="@drawable/ic_favorite"
+            app:tint="@color/white"
+            android:contentDescription="Favorite" />  <!-- Added content description -->
+
+
+        <ImageButton
+            android:id="@+id/buttonDislike"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/circle_background"
+            android:src="@drawable/ic_dislike"
+            app:tint="@color/white"
+            android:contentDescription="Dislike" />  <!-- Added content description -->
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

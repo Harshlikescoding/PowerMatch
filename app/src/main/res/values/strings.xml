@@ -1,0 +1,58 @@
+<resources>
+    <string name="search">Search</string>
+    <string name="home">Home</string>
+    <string name="notifications">Notifications</string>
+    <string name="profile">Profile</string>
+    <string name="powermatch_logo">Powermatch Logo</string>
+    <string name="like">Like</string>
+    <string name="favorite">Favorite</string>
+    <string name="chat">Chat</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="powermatch">PowerMatch</string>
+    <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign Up</string>
+    <string name="password">Password</string>
+    <string name="profile_photo" />
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="google_maps_key" />
+    <string name="info_window">Info Window</string>
+    <string name="description">Description</string>
+    <string name="app_name" />
+    <string-array name="age_options">
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>100</item>
+    </string-array>
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string-array name="fitness_goal_options">
+        <item>Lose Weight</item>
+        <item>Muscle Gain</item>
+        <item>Slim Body</item>
+        <item>Build Endurance</item>
+        <item>Improve Flexibility</item>
+    </string-array>
+    <string-array name="questions_options">
+        <item>How much do you bench press?</item>
+        <item>How often do you work out?</item>
+        <item>What’s your main fitness goal?</item>
+        <item>Do you follow a specific diet plan?</item>
+        <item>How many hours of sleep do you get?</item>
+        <item>What is your body type?</item>
+        <item>What’s your favorite workout routine?</item>
+        <item>Do you prefer working out at a gym or at home?</item>
+        <item>What motivates you to stay fit?</item>
+        <item>Do you track your progress?</item>
+    </string-array>
+
+
+</resources>
