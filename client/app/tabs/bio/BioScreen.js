@@ -20,7 +20,8 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "@/context/AuthContext";
 import api from "../../../constants/api";
-
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 const screenWidth = Dimensions.get("window").width;
 const carouselHeight = screenWidth * (9 / 16);
 
@@ -29,6 +30,8 @@ const Profile = () => {
   const [user, setUser] = useState({});
   const [profileImages, setProfileImages] = useState([]);
   const [bio, setBio] = useState("");
+  const [weight, setWeight] = useState("");
+  const [age, setAge] = useState("");
   const [loading, setLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -39,6 +42,22 @@ const Profile = () => {
     fetchUser();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      const loadUserData = async () => {
+        const token = await AsyncStorage.getItem("token");
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken.userId);
+  
+        if (decodedToken.userId) {
+          await fetchProfileData(decodedToken.userId);
+        }
+      };
+  
+      loadUserData();
+    }, [])
+  );
+  
   useEffect(() => {
     if (userId) {
       fetchProfileData();
@@ -51,16 +70,18 @@ const Profile = () => {
     setUserId(decodedToken.userId);
   };
 
-  const fetchProfileData = async () => {
+  const fetchProfileData = async (id = userId) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${api.API_URL}/api/user/profile/${userId}`
+        `${api.API_URL}/api/user/profile/${id}`
       );
       const data = response?.data?.user;
       setUser(data);
       setProfileImages(data?.imageUrls || []);
       setBio(data?.bio || "");
+      setWeight(data?.weight?.toString() || "");
+      setAge(data?.age?.toString() || "");
     } catch (error) {
       console.error("Error fetching profile data:", error);
     } finally {
@@ -75,23 +96,27 @@ const Profile = () => {
         `${api.API_URL}/api/user/update-bio/${userId}`,
         {
           bio,
+          weight: Number(weight),
+          age: Number(age),
         }
       );
-
+  
       if (response.status === 200) {
-        alert("Bio updated successfully!");
+        alert("Profile updated successfully!");
         setBio(response.data.user.bio);
+        fetchProfileData();
       } else {
-        alert("Failed to update bio.");
+        alert("Failed to update profile.");
       }
     } catch (error) {
-      console.error("Error saving bio:", error);
-      alert("An error occurred while saving the bio.");
+      console.error("Error saving profile:", error);
+      alert("An error occurred while saving the profile.");
     } finally {
       setIsSaving(false);
     }
   };
 
+  
   const generateBio = async () => {
     setIsGenerating(true);
     try {
@@ -199,28 +224,28 @@ const Profile = () => {
               </View>
             </View>
             <View style={styles.inputSection}>
-            <Text style={styles.inputLabel}>Weight (kg):</Text>
-            <TextInput
-              style={styles.input}
-              value={"60"}
-              // onChangeText={}
-              placeholder="Enter your weight"
-              keyboardType="numeric"
-              placeholderTextColor="#888"
-            />
-          </View>
+              <Text style={styles.inputLabel}>Weight (kg):</Text>
+              <TextInput
+                style={styles.input}
+                value={weight}
+                onChangeText={(text) => setWeight(text)}
+                placeholder="Enter your weight"
+                keyboardType="numeric"
+                placeholderTextColor="#888"
+              />
+            </View>
 
-          <View style={styles.inputSection}>
-            <Text style={styles.inputLabel}>Age:</Text>
-            <TextInput
-              style={styles.input}
-              value={"23"}
-              // onChangeText={}
-              placeholder="Enter your age"
-              keyboardType="numeric"
-              placeholderTextColor="#888"
-            />
-          </View>
+            <View style={styles.inputSection}>
+              <Text style={styles.inputLabel}>Age:</Text>
+              <TextInput
+                style={styles.input}
+                value={age}
+                onChangeText={(text) => setAge(text)}
+                placeholder="Enter your age"
+                keyboardType="numeric"
+                placeholderTextColor="#888"
+              />
+            </View>
             <View style={styles.buttonRow}>
               <Pressable
                 onPress={saveBio}
@@ -243,38 +268,48 @@ const Profile = () => {
 };
 
 export default Profile;
-
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: "#FFF5F5",
-    paddingBottom: 20,
+    backgroundColor: "#fff",
   },
   container: {
     alignItems: "center",
     padding: 20,
+    paddingBottom: 100,
   },
   profileHeader: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 30,
   },
   editIconButton: {
     position: "absolute",
     top: 20,
     right: 20,
     zIndex: 10,
-    backgroundColor: "#FFECEC",
-    borderRadius: 20,
-    padding: 5,
+    backgroundColor: "#fddede",
+    borderRadius: 24,
+    padding: 6,
+    elevation: 3,
+  },
+  adminButton: {
+    position: "absolute",
+    top: 20,
+    left: 20,
+    zIndex: 10,
+    backgroundColor: "#fddede",
+    borderRadius: 24,
+    padding: 6,
+    elevation: 3,
   },
   profileImageContainer: {
     position: "relative",
   },
   profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 2,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    borderWidth: 3,
     borderColor: "#DC143C",
   },
   cameraIconContainer: {
@@ -282,63 +317,98 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     backgroundColor: "#DC143C",
-    borderRadius: 15,
-    padding: 5,
+    borderRadius: 20,
+    padding: 6,
+    elevation: 2,
   },
   userName: {
-    fontSize: 22,
-    fontWeight: "bold",
+    fontSize: 24,
+    fontWeight: "700",
     color: "#2D3748",
-    marginTop: 10,
+    marginTop: 12,
   },
   userEmail: {
-    fontSize: 14,
-    color: "#4A5568",
-    marginTop: 5,
+    fontSize: 15,
+    color: "#718096",
+    marginTop: 4,
   },
   bioSection: {
     width: "100%",
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 25,
   },
   bioLabel: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "600",
     color: "#2D3748",
-    marginBottom: 5,
+    marginBottom: 8,
   },
   bioInputContainer: {
     position: "relative",
   },
   bioInput: {
-    backgroundColor: "#FFECEC",
-    borderRadius: 10,
+    backgroundColor: "#fff5f5",
+    borderRadius: 16,
     padding: 15,
-    fontSize: 14,
+    fontSize: 15,
     color: "#2D3748",
     textAlignVertical: "top",
-    height: 100,
+    height: 110,
     paddingRight: 40,
+    borderWidth: 1,
+    borderColor: "#fbb6b6",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
   generateIconButton: {
     position: "absolute",
     right: 10,
     top: 15,
   },
+  inputSection: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 17,
+    fontWeight: "500",
+    color: "#2D3748",
+    marginBottom: 6,
+  },
+  input: {
+    backgroundColor: "#fff5f5",
+    borderRadius: 16,
+    padding: 12,
+    fontSize: 16,
+    color: "#2D3748",
+    borderWidth: 1,
+    borderColor: "#fbb6b6",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    paddingHorizontal: 20,
+    marginTop: 30,
+    gap: 12,
   },
   actionButton: {
     backgroundColor: "#DC143C",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 25,
+    borderRadius: 30,
+    flex: 1,
+    alignItems: "center",
+    elevation: 3,
   },
   actionButtonText: {
-    color: "white",
+    color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -347,35 +417,16 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     backgroundColor: "#FF6347",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 25,
+    borderRadius: 30,
+    flex: 1,
+    alignItems: "center",
+    elevation: 3,
   },
   logoutButtonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
   },
-  inputSection: {
-    marginVertical: 10,
-    width: "90%",
-    marginBottom: 20,
-  },
-  
-  inputLabel: {
-    fontSize: 16,
-    color: "#333",
-    marginBottom: 4,
-  },
-  
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    fontSize: 16,
-    color: "#333",
-    backgroundColor: "#FFECEC",
-  },
-  
 });

@@ -10,8 +10,10 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import Entypo from "react-native-vector-icons/Entypo";
+import { KeyboardAvoidingView, TouchableOpacity } from "react-native";
 import { SlideAnimation, ModalContent, BottomModal } from "react-native-modals";
 import { useNavigation } from "@react-navigation/native";
+
 
 const ShowPromptScreen = () => {
   const navigation = useNavigation();
@@ -171,18 +173,38 @@ const ShowPromptScreen = () => {
         modalAnimation={new SlideAnimation({ slideFrom: "bottom" })}
       >
         <ModalContent style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Answer your question</Text>
-          <Text style={styles.modalQuestion}>{question}</Text>
-          <TextInput
-            value={answer}
-            onChangeText={setAnswer}
-            style={styles.textInput}
-            placeholder="Enter Your Answer"
-          />
-          <Pressable style={styles.addButton} onPress={addPrompt}>
-            <Text style={styles.addButtonText}>Add</Text>
-          </Pressable>
-        </ModalContent>
+        <ModalContent style={{ padding: 0, height: 300 }}>
+  <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+    <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "center",
+        padding: 20,
+      }}
+      keyboardShouldPersistTaps="handled"
+    >
+      <Text style={styles.modalTitle}>Answer your question</Text>
+      <Text style={styles.modalQuestion}>{question}</Text>
+
+      <TextInput
+        value={answer}
+        onChangeText={setAnswer}
+        style={styles.textInput}
+        placeholder="Enter Your Answer"
+        placeholderTextColor="#aaa"
+        editable={true} // 👈 ensure this is set
+        multiline={true} // optional
+      />
+
+      <TouchableOpacity style={styles.addButton} onPress={addPrompt}>
+        <Text style={styles.addButtonText}>Add</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  </KeyboardAvoidingView>
+</ModalContent>
+
+</ModalContent>
+
       </BottomModal>
     </>
   );

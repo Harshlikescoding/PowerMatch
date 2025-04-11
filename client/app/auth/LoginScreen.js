@@ -12,6 +12,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Entypo from "react-native-vector-icons/Entypo";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { TouchableOpacity } from "react-native";
 import LottieView from "lottie-react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage, {
@@ -118,40 +119,43 @@ const LoginScreen = () => {
             </>
           )}
 
-          <Pressable
-            onPress={createAccount}
-            style={[
-              styles.button,
-              option == "Create account" && styles.activeButton,
-            ]}
-          >
-            <Text
-              style={[
-                styles.buttonText,
-                option == "Create account" && styles.activeButtonText,
-              ]}
-            >
-              Create account
-            </Text>
-          </Pressable>
+<TouchableOpacity
+  onPress={createAccount}
+  activeOpacity={0.7}
+  style={[
+    styles.button,
+    option === "Create account" && styles.activeButton,
+  ]}
+>
+  <Text
+    style={[
+      styles.buttonText,
+      option === "Create account" && styles.activeButtonText,
+    ]}
+  >
+    Create account
+  </Text>
+</TouchableOpacity>
 
-          <Pressable
-            onPress={signInUser}
-            style={[
-              styles.button,
-              option == "Sign In" && styles.activeButton,
-              { marginTop: 20 },
-            ]}
-          >
-            <Text
-              style={[
-                styles.buttonText,
-                option == "Sign In" && styles.activeButtonText,
-              ]}
-            >
-              Sign In
-            </Text>
-          </Pressable>
+<TouchableOpacity
+  onPress={signInUser}
+  activeOpacity={0.7}
+  style={[
+    styles.button,
+    option === "Sign In" && styles.activeButton,
+    { marginTop: 20 },
+  ]}
+>
+  <Text
+    style={[
+      styles.buttonText,
+      option === "Sign In" && styles.activeButtonText,
+    ]}
+  >
+    Sign In
+  </Text>
+</TouchableOpacity>
+
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

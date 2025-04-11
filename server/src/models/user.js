@@ -15,6 +15,9 @@ const userSchema = new Schema({
   age: {
     type: Number,
   },
+  weight: {
+    type: Number,
+  },
   email: {
     type: String,
     required: true,
@@ -158,6 +161,11 @@ const userSchema = new Schema({
       ref: "User",
     },
   ],
+  status: {
+    type: String,
+    enum: ["pending", "approved", "blocked"],
+    default: "pending"
+  },
   notificationPreferences: {
     email: {
       type: Boolean,

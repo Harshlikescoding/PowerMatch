@@ -113,7 +113,7 @@ const PreFinalScreen = () => {
             "Content-Type": "multipart/form-data",
           },
         }
-      );
+      ); 
 
       if (response.status === 201) {
         const token = response.data.token;

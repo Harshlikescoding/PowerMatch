@@ -12,5 +12,7 @@ router.put("/update-profile/:userId", userController.updateProfile);
 router.get("/generate-bio/:userId", userController.generateBio);
 router.put("/update-bio/:userId", userController.updateBio);
 router.put("/update-images", userController.updateImages);
+router.post("/approve/:userId", userController.approveUser);
+router.post("/block/:userId", userController.blockUser);
 
 module.exports = router;

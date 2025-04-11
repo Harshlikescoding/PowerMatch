@@ -122,6 +122,7 @@ const getProfiles = async (req, res) => {
         geoScore,
         ageDifferenceScore,
         totalScore,
+        status: user.status,
       };
     });
 
@@ -162,19 +163,24 @@ const generateBio = async (req, res) => {
     res.status(500).json({ message: "Error generating bio", error });
   }
 };
-
 const updateBio = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { bio } = req.body;
+    const { bio, weight, age } = req.body;
 
-    if (!userId || !bio) {
-      return res.status(400).json({ message: "User ID and bio are required." });
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required." });
     }
+
+    const updateData = {};
+
+    if (bio) updateData.bio = bio;
+    if (weight !== undefined) updateData.weight = weight;
+    if (age !== undefined) updateData.age = age;
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { bio },
+      updateData,
       { new: true, runValidators: true }
     );
 
@@ -182,11 +188,15 @@ const updateBio = async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    res
-      .status(200)
-      .json({ message: "Bio updated successfully", user: updatedUser });
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser
+    });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
   }
 };
 
@@ -408,6 +418,31 @@ const updateProfile = async (req, res) => {
   }
 };
 
+
+const approveUser = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findByIdAndUpdate(userId, { status: "approved" }, { new: true });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json({ message: "User approved", user });
+  } catch (error) {
+    console.error("Approve Error:", error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
+const blockUser = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findByIdAndUpdate(userId, { status: "blocked" }, { new: true });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json({ message: "User blocked", user });
+  } catch (error) {
+    console.error("Block Error:", error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
 const userController = {
   getUserData,
   getProfiles,
@@ -415,6 +450,8 @@ const userController = {
   updateBio,
   updateImages,
   likeProfile,
+  approveUser,
+  blockUser,
   receivedLikes,
   createMatch,
   getMatches,

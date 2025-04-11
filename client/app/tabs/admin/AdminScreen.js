@@ -5,6 +5,7 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import constants from "../../../constants/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
+import { Button } from 'react-native';
 const AdminScreen = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +23,8 @@ const AdminScreen = () => {
     useEffect(() => {
       fetchUser();
     }, []);
+
+    
 
   useEffect(() => {
     if (userId) {
@@ -61,25 +64,61 @@ const AdminScreen = () => {
     fetchProfiles();
   }, [userId, applyPreferences]);
 
-  // Handle Approve User
-  const approveUser = (userId) => {
-    console.log(`User ${userId} Approved ✅`);
-    alert(`User ${userId} Approved`);
+  const approveUser = async (id) => {
+    try {
+      const res = await axios.post(`${constants.API_URL}/api/user/approve/${id}`);
+      alert(`User ${id} Approved`);
+      fetchProfiles(); // Refresh user list
+    } catch (error) {
+      console.error("Approve failed:", error);
+      alert("Error approving user");
+    }
+  };
+  
+  const blockUser = async (id) => {
+    try {
+      const res = await axios.post(`${constants.API_URL}/api/user/block/${id}`);
+      alert(`User ${id} Blocked`);
+      fetchProfiles(); // Refresh user list
+    } catch (error) {
+      console.error("Block failed:", error);
+      alert("Error blocking user");
+    }
   };
 
-  // Handle Block User
-  const blockUser = (userId) => {
-    console.log(`User ${userId} Blocked ❌`);
-    alert(`User ${userId} Blocked`);
+  const clearToken = async () => {
+    try {
+      await AsyncStorage.removeItem("role");
+      alert("Token deleted from storage.");
+      window.location.reload(); 
+    } catch (error) {
+      console.error("Failed to delete token", error);
+    }
   };
+  
+
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case "approved":
+        return { backgroundColor: "#28a745" };
+      case "blocked":
+        return { backgroundColor: "#dc3545" };
+      case "pending":
+      default:
+        return { backgroundColor: "#ffc107" };
+    }
+  };
+  
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Admin Approval</Text>
-
+      
+    
       {loading ? (
         <ActivityIndicator size="large" color="#DC143C" />
       ) : (
+        
         <FlatList
           data={users}
           keyExtractor={(item) => item.userId}
@@ -97,21 +136,42 @@ const AdminScreen = () => {
                 <Text style={styles.userLocation}>{item.province}, {item.district}</Text>
                 <Text style={styles.userAge}>Age: {item.dateOfBirth}</Text>
                 <Text style={styles.userGender}>Gender: {item.gender}</Text>
+                <Text style={[styles.statusBadge, getStatusStyle(item.status)]}>
+                  {item.status.toUpperCase()}
+                </Text>
               </View>
 
               {/* Action Buttons */}
               <View style={styles.buttonContainer}>
-                <Pressable style={styles.approveButton} onPress={() => approveUser(item.userId)}>
-                  <AntDesign name="checkcircle" size={24} color="white" />
-                </Pressable>
-                <Pressable style={styles.blockButton} onPress={() => blockUser(item.userId)}>
-                  <Entypo name="block" size={24} color="white" />
-                </Pressable>
+                {(item.status === "pending" || item.status === "blocked") && (
+                   <Pressable style={styles.approveButton} onPress={() => approveUser(item.userId)}>
+                   <AntDesign name="checkcircle" size={24} color="white" />
+                 </Pressable>
+                )}
+                  {(item.status === "approved" || item.status === "pending") && (
+                    <Pressable style={styles.blockButton} onPress={() => blockUser(item.userId)}>
+                    <Entypo name="block" size={24} color="white" />
+                  </Pressable>
+                  )}
+                
               </View>
             </View>
           )}
         />
       )}
+        <Pressable
+      onPress={clearToken}
+      style={{
+        backgroundColor: "#DC143C",
+        padding: 10,
+        borderRadius: 8,
+        marginBottom: 47,
+      }}
+    >
+      <Text style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>
+        Logout 
+      </Text>
+    </Pressable>
     </View>
   );
 };
@@ -143,6 +203,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+  },
+  statusBadge: {
+    color: "#fff",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    fontSize: 12,
+    alignSelf: "flex-start",
+    marginTop: 4,
+    fontWeight: "bold",
+    overflow: "hidden",
   },
   profileImage: {
     width: 60,

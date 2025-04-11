@@ -62,7 +62,7 @@ export default function BottomTabs() {
               );
       
           } else if (route.name === "Profile") {
-            iconName = "heart-multiple-outline";
+            iconName = "robot-excited";
             return (
               <MaterialCommunityIcons
                 name={iconName}
