@@ -12,7 +12,7 @@ const authRouter = require("./src/routers/authRouter");
 const chatRouter = require("./src/routers/chatRouter");
 
 var corsOptions = {
-  origin: "http://localhost:8081",
+  origin: "*",
   credentials: true,
   optionSuccessStatus: 200,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
